@@ -4352,18 +4352,19 @@ html[data-theme="clair"] .hud-scanline {
 
 /* ---- scene / visualiseur de navire (rotation pilotee par le joueur) ---- */
 .shipyard-preview.stage {
-  min-height: 300px;
-  padding: 16px 14px 30px;
+  min-height: 288px;
+  padding: 14px;
+  overflow: hidden;
   background:
-    radial-gradient(90% 65% at 50% 32%, rgba(76, 234, 255, 0.16), transparent 70%),
+    radial-gradient(80% 60% at 50% 42%, rgba(76, 234, 255, 0.16), transparent 70%),
     linear-gradient(180deg, #0e2740 0%, #081a2c 55%, #050f1a 100%);
   border-color: rgba(76, 234, 255, 0.35);
 }
 .ship-model {
   position: relative;
-  width: 100%;
-  max-width: 320px;
-  aspect-ratio: 1 / 1;
+  width: 240px;
+  max-width: 100%;
+  height: 224px;
   margin: 0 auto;
   display: grid;
   place-items: center;
@@ -4371,26 +4372,29 @@ html[data-theme="clair"] .hud-scanline {
   touch-action: none;
   user-select: none;
   isolation: isolate;
-  contain: layout paint style;
 }
 .ship-model.dragging {
   cursor: grabbing;
 }
-/* halo sol + ombre portee sous le navire */
+/* ombre portee au sol */
 .ship-model::before {
   content: "";
   position: absolute;
-  left: 12%;
-  right: 12%;
-  bottom: 10%;
-  height: 22px;
+  left: 22%;
+  right: 22%;
+  bottom: 6%;
+  height: 18px;
   border-radius: 50%;
   background: radial-gradient(ellipse, rgba(0, 0, 0, 0.55), transparent 72%);
-  filter: blur(2px);
+  z-index: 0;
 }
 .ship-model-rot {
-  width: 84%;
-  height: 88%;
+  position: relative;
+  z-index: 1;
+  width: 96%;
+  height: 96%;
+  display: grid;
+  place-items: center;
   transform: rotate(var(--spin, 0deg));
   transition: transform 0.05s linear;
 }
@@ -4400,11 +4404,15 @@ html[data-theme="clair"] .hud-scanline {
 .ship-model-fx {
   width: 100%;
   height: 100%;
-  filter: brightness(1.26) contrast(1.07) drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55));
+  display: grid;
+  place-items: center;
+  filter: brightness(1.24) contrast(1.06) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.55));
 }
-.ship-model-rot .ship-sprite {
-  width: 100%;
+.ship-model-fx .ship-sprite {
+  width: auto;
+  max-width: 100%;
   height: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
 /* vignette illustration dans un coin de la scene */
