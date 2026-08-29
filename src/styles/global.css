@@ -2185,6 +2185,7 @@ html[data-theme="clair"] .cell.blocked {
   position: relative;
   width: 100%;
   max-width: 980px;
+  isolation: isolate;
   animation: overlay-rise 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 @keyframes overlay-rise {
@@ -4291,15 +4292,15 @@ html[data-theme="clair"] .hud-scanline {
   background: radial-gradient(120% 90% at 50% 40%, #0f2233, #091420 70%);
 }
 .shipyard-preview.has-hero::after {
-  /* animated swell at the waterline */
+  /* static glow at the waterline (pas d'animation infinie : provoquait un
+     ghosting a l'interieur de l'overlay a backdrop-filter) */
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: 22px;
   height: 40px;
-  background: radial-gradient(60% 100% at 50% 100%, rgba(76, 234, 255, 0.28), transparent 70%);
-  animation: hero-swell 3.4s ease-in-out infinite;
+  background: radial-gradient(60% 100% at 50% 100%, rgba(76, 234, 255, 0.22), transparent 70%);
   pointer-events: none;
 }
 .shipyard-preview-art {
@@ -4308,20 +4309,11 @@ html[data-theme="clair"] .hud-scanline {
   height: 176px; /* espace reserve -> pas de reflow au chargement de l'image */
   object-fit: contain;
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
-  transform-origin: 50% 92%;
-  animation: ship-swap 0.4s ease, ship-sail 4.6s ease-in-out 0.4s infinite;
+  animation: ship-swap 0.35s ease;
 }
 @keyframes ship-swap {
-  from { opacity: 0; transform: translateY(12px) scale(0.93); }
+  from { opacity: 0; transform: translateY(10px) scale(0.94); }
   to { opacity: 1; transform: none; }
-}
-@keyframes ship-sail {
-  0%, 100% { transform: translateY(0) rotate(-1.4deg); }
-  50% { transform: translateY(-6px) rotate(1.4deg); }
-}
-@keyframes hero-swell {
-  0%, 100% { opacity: 0.5; transform: scaleX(0.9); }
-  50% { opacity: 1; transform: scaleX(1.08); }
 }
 .shipyard-preview-mini {
   position: absolute;
