@@ -1,0 +1,10 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.env
+.env.local
+
+# clone GitHub egare (repo "ships" cree par erreur dans un sous-dossier)
+/ships/

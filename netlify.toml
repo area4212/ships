@@ -1,0 +1,10 @@
+# Deploiement Netlify (utile seulement si le site est connecte a un depot Git ;
+# pour un glisser-deposer du dossier dist/ ce fichier est ignore).
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
