@@ -59,7 +59,9 @@ function ShipModel({ loadout }: { loadout: Loadout }) {
       onPointerCancel={up}
     >
       <div className="ship-model-rot">
-        <ShipArt variant="contre-torpilleur" length={3} orientation="vertical" uid="model" livery={livery} flag={flag} />
+        <div className="ship-model-fx">
+          <ShipArt variant="contre-torpilleur" length={3} orientation="vertical" uid="model" livery={livery} flag={flag} />
+        </div>
       </div>
     </div>
   );
@@ -106,7 +108,7 @@ function PreviewShip({ loadout, artFocus }: { loadout: Loadout; artFocus?: Cosme
         {trail && <span className="shipyard-badge trail" style={{ background: trail }} />}
       </div>
 
-      <ShipModel loadout={loadout} />
+      <ShipModel key={`${loadout.hull}|${loadout.aura}`} loadout={loadout} />
       <span className="shipyard-preview-caption">
         {shownHull?.name ?? "Votre flotte"} · glissez pour tourner
       </span>
