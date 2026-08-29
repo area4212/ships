@@ -33,6 +33,9 @@ interface GridProps {
   variant?: "enemy" | "own";
   livery?: ShipLivery;
   flag?: string[];
+  /** animated aura fx key (e.g. "flammes"); "none"/undefined = none */
+  aura?: string;
+  auraColor?: string;
   onCellClick?: (r: number, c: number) => void;
   onCellEnter?: (r: number, c: number) => void;
   onCellLeave?: () => void;
@@ -56,7 +59,8 @@ function overlayGeometry(cells: string[]): { r: number; c: number; rowSpan: numb
   };
 }
 
-export function Grid({ size, data, ships, variant, livery, flag, onCellClick, onCellEnter, onCellLeave }: GridProps) {
+export function Grid({ size, data, ships, variant, livery, flag, aura, auraColor, onCellClick, onCellEnter, onCellLeave }: GridProps) {
+  const auraFx = aura && aura !== "none" ? aura : null;
   const columns = `28px repeat(${size}, var(--cell-size, 34px))`;
   const rowsTemplate = `28px repeat(${size}, var(--cell-size, 34px))`;
 
@@ -82,10 +86,13 @@ export function Grid({ size, data, ships, variant, livery, flag, onCellClick, on
         return (
           <div
             key={ship.id}
-            className={`ship-overlay ${ship.sunk ? "sunk" : ""}`}
+            className={`ship-overlay ${ship.sunk ? "sunk" : ""}${
+              auraFx && !ship.sunk ? ` aura aura-${auraFx}` : ""
+            }`}
             style={{
               gridRow: `${geo.r + 2} / span ${geo.rowSpan}`,
               gridColumn: `${geo.c + 2} / span ${geo.colSpan}`,
+              ...(auraColor ? ({ ["--aura" as string]: auraColor } as React.CSSProperties) : {}),
             }}
           >
             <ShipArt

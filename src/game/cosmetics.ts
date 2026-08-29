@@ -6,7 +6,7 @@
 // (bundled JPG in public/cosmetics/) for the shop + HUD, plus a derived
 // livery/flag/trail so it still applies to the top-down grid ships.
 
-export type CosmeticCategory = "hull" | "flag" | "emblem" | "trail" | "grid";
+export type CosmeticCategory = "hull" | "flag" | "emblem" | "trail" | "grid" | "aura";
 export type Rarity = "commun" | "rare" | "epique" | "legendaire";
 export type Collection = "standard" | "medieval";
 
@@ -47,6 +47,8 @@ export interface CosmeticDef {
   trail?: string;
   /** grid: board water + line colours */
   grid?: { water: string; line: string };
+  /** aura: an animated CSS effect around your ships (key = the id suffix used in CSS) */
+  aura?: { fx: string; color: string };
 }
 
 export const RARITY_PRICE: Record<Rarity, number> = {
@@ -74,9 +76,10 @@ export const CATEGORY_META: Record<CosmeticCategory, { label: string; help: stri
   emblem: { label: "Embleme d'escadre", help: "Le blason affiche sur le bandeau de votre grille." },
   trail: { label: "Sillage de combat", help: "La teinte de vos impacts et gerbes d'eau." },
   grid: { label: "Theme de grille", help: "La couleur de l'eau et du quadrillage de votre grille." },
+  aura: { label: "Aura de flotte", help: "Un effet anime autour de vos navires sur la grille." },
 };
 
-export const CATEGORY_ORDER: CosmeticCategory[] = ["hull", "flag", "emblem", "trail", "grid"];
+export const CATEGORY_ORDER: CosmeticCategory[] = ["hull", "aura", "flag", "emblem", "trail", "grid"];
 
 const P = RARITY_PRICE;
 
@@ -178,6 +181,14 @@ export const COSMETICS: CosmeticDef[] = [
   { id: "grid-sang", category: "grid", name: "Mer de sang", price: P.rare, rarity: "rare", grid: { water: "#3a1420", line: "rgba(224,106,106,0.35)" } },
   { id: "grid-neon", category: "grid", name: "Grille neon", price: P.legendaire, rarity: "legendaire", grid: { water: "#0a1030", line: "rgba(76,143,255,0.45)" } },
 
+  // ---- Auras (effet CSS anime autour des navires) --------------------
+  { id: "aura-none", category: "aura", name: "Aucune aura", price: 0, rarity: "commun", aura: { fx: "none", color: "#8ea7bd" } },
+  { id: "aura-flammes", category: "aura", name: "Braises ardentes", price: P.rare, rarity: "rare", aura: { fx: "flammes", color: "#ff6a2c" } },
+  { id: "aura-givre", category: "aura", name: "Souffle de givre", price: P.rare, rarity: "rare", aura: { fx: "givre", color: "#7fe4ff" } },
+  { id: "aura-foudre", category: "aura", name: "Arcs de foudre", price: P.epique, rarity: "epique", aura: { fx: "foudre", color: "#ffd23f" } },
+  { id: "aura-spectre", category: "aura", name: "Halo spectral", price: P.epique, rarity: "epique", aura: { fx: "spectre", color: "#b06bff" } },
+  { id: "aura-dragon", category: "aura", name: "Souffle du dragon", price: P.legendaire, rarity: "legendaire", aura: { fx: "dragon", color: "#ff3b3b" } },
+
   // ============================================================
   //  Collection medievale (illustrations) — 6 ages x 4 categories
   // ============================================================
@@ -255,6 +266,7 @@ export interface Loadout {
   emblem: string;
   trail: string;
   grid: string;
+  aura: string;
 }
 
 /** Free item per category — always owned, equipped by default. */
@@ -264,6 +276,7 @@ export const DEFAULT_LOADOUT: Loadout = {
   emblem: "emblem-none",
   trail: "trail-standard",
   grid: "grid-standard",
+  aura: "aura-none",
 };
 
 export const FREE_COSMETIC_IDS = Object.values(DEFAULT_LOADOUT);

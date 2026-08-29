@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useApp } from "../context/AppContext";
 import { ShipArt } from "../assets/shipArt";
 import { EmblemGlyph } from "../assets/emblemArt";
@@ -15,10 +15,58 @@ import {
   isOwned,
 } from "../game/cosmetics";
 
+/** Interactive top-down ship "model": auto-spins, drag to rotate it like a turntable. */
+function ShipModel({ loadout }: { loadout: Loadout }) {
+  const livery = cosmeticById(loadout.hull)?.livery;
+  const flag = cosmeticById(loadout.flag)?.flag;
+  const aura = cosmeticById(loadout.aura)?.aura;
+  const [angle, setAngle] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  const last = useRef(0);
+
+  function angleOf(e: React.PointerEvent) {
+    const r = box.current!.getBoundingClientRect();
+    return (Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180) / Math.PI;
+  }
+  function down(e: React.PointerEvent) {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    last.current = angleOf(e);
+    setDragging(true);
+  }
+  function move(e: React.PointerEvent) {
+    if (!dragging) return;
+    const a = angleOf(e);
+    setAngle((prev) => prev + (a - last.current));
+    last.current = a;
+  }
+  function up(e: React.PointerEvent) {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    setDragging(false);
+  }
+
+  return (
+    <div
+      ref={box}
+      className={`ship-model${dragging ? " dragging" : ""}${aura && aura.fx !== "none" ? ` aura aura-${aura.fx}` : ""}`}
+      style={
+        { "--spin": `${angle}deg`, ...(aura ? { ["--aura" as string]: aura.color } : {}) } as React.CSSProperties
+      }
+      title="Glissez pour faire tourner"
+      onPointerDown={down}
+      onPointerMove={move}
+      onPointerUp={up}
+      onPointerCancel={up}
+    >
+      <div className="ship-model-rot">
+        <ShipArt variant="contre-torpilleur" length={3} orientation="vertical" uid="model" livery={livery} flag={flag} />
+      </div>
+    </div>
+  );
+}
+
 function PreviewShip({ loadout, artFocus }: { loadout: Loadout; artFocus?: CosmeticDef }) {
   const hullDef = cosmeticById(loadout.hull);
-  const livery = hullDef?.livery;
-  const flag = cosmeticById(loadout.flag)?.flag;
   const grid = cosmeticById(loadout.grid)?.grid;
   const trail = cosmeticById(loadout.trail)?.trail;
   const emblem = cosmeticById(loadout.emblem)?.emblem;
@@ -73,17 +121,13 @@ function PreviewShip({ loadout, artFocus }: { loadout: Loadout; artFocus?: Cosme
           <div className="shipyard-preview-artwrap">
             <img className="shipyard-preview-art" src={hero} alt="" />
           </div>
-          <div className="shipyard-preview-mini" title="Vos navires sur la grille">
-            <ShipArt variant="destroyer" length={4} orientation="horizontal" uid="preview" livery={livery} flag={flag} />
-          </div>
+          <ShipModel loadout={loadout} />
           <span className="shipyard-preview-caption">{shownHull?.name ?? "Apercu"}</span>
         </>
       ) : (
         <>
-          <div className="shipyard-preview-hull">
-            <ShipArt variant="destroyer" length={4} orientation="horizontal" uid="preview" livery={livery} flag={flag} />
-          </div>
-          <span className="shipyard-preview-caption">Apercu de votre flotte</span>
+          <ShipModel loadout={loadout} />
+          <span className="shipyard-preview-caption">Apercu de votre flotte — glissez pour tourner</span>
         </>
       )}
     </div>
@@ -91,6 +135,20 @@ function PreviewShip({ loadout, artFocus }: { loadout: Loadout; artFocus?: Cosme
 }
 
 function Swatch({ def }: { def: CosmeticDef }) {
+  if (def.aura) {
+    return def.aura.fx === "none" ? (
+      <span className="cos-swatch aura-swatch">
+        <span className="cos-swatch-none">—</span>
+      </span>
+    ) : (
+      <span
+        className={`cos-swatch aura-swatch aura aura-${def.aura.fx}`}
+        style={{ ["--aura" as string]: def.aura.color } as React.CSSProperties}
+      >
+        <span className="aura-swatch-core" />
+      </span>
+    );
+  }
   const img = cosmeticImage(def);
   if (img) {
     return (

@@ -42,6 +42,7 @@ export function OnlineBattleView({
   const [hover, setHover] = useState<string | null>(null);
   const [myEmote, setMyEmote] = useState<{ id: string; ts: number } | null>(null);
   const ownLivery = liveryFor(loadout);
+  const ownAura = equippedDef(loadout, "aura")?.aura;
   const ownFlag = equippedDef(loadout, "flag")?.flag;
   const fxTrail = equippedDef(loadout, "trail")?.trail;
   const gridTheme = equippedDef(loadout, "grid")?.grid;
@@ -253,6 +254,8 @@ export function OnlineBattleView({
               variant="own"
               livery={ownLivery}
               flag={ownFlag}
+              aura={ownAura?.fx}
+              auraColor={ownAura?.color}
               onCellClick={my && power === "mine" ? clickOwn : undefined}
               onCellEnter={power === "mine" ? (r, c) => setHover(`${r},${c}`) : undefined}
               onCellLeave={power === "mine" ? () => setHover(null) : undefined}

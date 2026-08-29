@@ -107,6 +107,7 @@ export function Battle({
 }: BattleProps) {
   const { settings, sfx, recordShot, stats, loadout } = useApp();
   const ownLivery = liveryFor(loadout);
+  const ownAura = equippedDef(loadout, "aura")?.aura;
   const ownFlag = equippedDef(loadout, "flag")?.flag;
   const ownEmblem = equippedDef(loadout, "emblem")?.emblem;
   const gridTheme = equippedDef(loadout, "grid")?.grid;
@@ -742,6 +743,8 @@ export function Battle({
               variant="own"
               livery={ownLivery}
               flag={ownFlag}
+              aura={ownAura?.fx}
+              auraColor={ownAura?.color}
               onCellClick={canUsePowers && selectedPower === "mine" ? handleOwnCell : undefined}
               onCellEnter={selectedPower === "mine" ? (r, c) => setAimHover(`${r},${c}`) : undefined}
               onCellLeave={selectedPower === "mine" ? () => setAimHover(null) : undefined}
