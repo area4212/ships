@@ -4350,12 +4350,7 @@ html[data-theme="clair"] .hud-scanline {
   color: #eafcff;
 }
 
-/* ---- modele de navire interactif (glisser pour tourner) ---- */
-@property --auto {
-  syntax: "<angle>";
-  inherits: true;
-  initial-value: 0deg;
-}
+/* ---- modele de navire interactif : rotation 100% pilotee par le joueur ---- */
 .ship-model {
   position: relative;
   width: 120px;
@@ -4375,20 +4370,31 @@ html[data-theme="clair"] .hud-scanline {
 .ship-model-rot {
   width: 62%;
   height: 92%;
-  animation: model-autoturn 26s linear infinite;
-  transform: rotate(calc(var(--spin, 0deg) + var(--auto, 0deg)));
+  transform: rotate(var(--spin, 0deg));
+  transition: transform 0.06s linear;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
 }
 .ship-model.dragging .ship-model-rot {
-  animation-play-state: paused;
+  transition: none;
 }
 .ship-model-rot .ship-sprite {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
-@keyframes model-autoturn {
-  to { --auto: 360deg; }
+/* petit indice visuel : anneau qui tourne pour montrer qu'on peut faire pivoter */
+.ship-model::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px dashed rgba(76, 234, 255, 0.28);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.ship-model:hover::after {
+  opacity: 1;
 }
 
 /* ---- Auras animees (autour des navires) ---- */
