@@ -2494,6 +2494,7 @@ html[data-theme="clair"] .cell.blocked {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 210px; /* stable — pas de saut quand on survole une coque illustree */
   padding: 18px 14px 12px;
   border-radius: 12px;
   background: linear-gradient(165deg, var(--grid-water, #0c2d47), #071a2b);
@@ -2595,13 +2596,14 @@ html[data-theme="clair"] .cell.blocked {
 
 .cos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(292px, 1fr));
   gap: 10px;
 }
 .cos-card {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-height: 74px;
   padding: 10px 12px;
   border-radius: 10px;
   background: rgba(12, 36, 56, 0.55);
@@ -2704,8 +2706,8 @@ html[data-theme="clair"] .cell.blocked {
   background: radial-gradient(circle at 50% 40%, rgba(76, 234, 255, 0.12), rgba(4, 14, 24, 0.7));
 }
 .cos-swatch.img.wide {
-  width: 96px;
-  height: 58px;
+  width: 84px;
+  height: 54px;
 }
 .shipyard-preview-art,
 .shipyard-badge.img img {
@@ -4301,9 +4303,9 @@ html[data-theme="clair"] .hud-scanline {
   pointer-events: none;
 }
 .shipyard-preview-art {
-  width: 100%;
-  max-width: 300px;
-  max-height: 186px;
+  width: 300px;
+  max-width: 88%;
+  height: 176px; /* espace reserve -> pas de reflow au chargement de l'image */
   object-fit: contain;
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
   transform-origin: 50% 92%;

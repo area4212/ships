@@ -78,7 +78,7 @@ function Swatch({ def }: { def: CosmeticDef }) {
   if (img) {
     return (
       <span className={`cos-swatch img${def.category === "hull" ? " wide" : ""}`}>
-        <img src={img} alt="" loading="lazy" />
+        <img src={img} alt="" width={def.category === "hull" ? 84 : 54} height={54} />
       </span>
     );
   }
