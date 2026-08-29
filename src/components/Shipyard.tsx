@@ -75,24 +75,9 @@ function PreviewShip({ loadout, artFocus }: { loadout: Loadout; artFocus?: Cosme
   const shownHull = artFocus?.category === "hull" && artFocus.image ? artFocus : hullDef;
   const hero = cosmeticImage(shownHull);
 
-  // pointer parallax: tilt the flagship illustration like a 3D turntable
-  function tilt(e: React.MouseEvent<HTMLDivElement>) {
-    const r = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    e.currentTarget.style.setProperty("--tx", (x * 26).toFixed(1));
-    e.currentTarget.style.setProperty("--ty", (-y * 16).toFixed(1));
-  }
-  function resetTilt(e: React.MouseEvent<HTMLDivElement>) {
-    e.currentTarget.style.setProperty("--tx", "0");
-    e.currentTarget.style.setProperty("--ty", "0");
-  }
-
   return (
     <div
-      className={`shipyard-preview${hero ? " has-hero" : ""}`}
-      onMouseMove={hero ? tilt : undefined}
-      onMouseLeave={hero ? resetTilt : undefined}
+      className="shipyard-preview stage"
       style={
         {
           "--grid-water": grid?.water,
@@ -101,6 +86,11 @@ function PreviewShip({ loadout, artFocus }: { loadout: Loadout; artFocus?: Cosme
       }
     >
       <div className="shipyard-preview-badges">
+        {hero && (
+          <span className="shipyard-badge img art-thumb" title={shownHull?.name}>
+            <img src={hero} alt="" />
+          </span>
+        )}
         {emblemImg ? (
           <span className="shipyard-badge img">
             <img src={emblemImg} alt="" />
@@ -116,20 +106,10 @@ function PreviewShip({ loadout, artFocus }: { loadout: Loadout; artFocus?: Cosme
         {trail && <span className="shipyard-badge trail" style={{ background: trail }} />}
       </div>
 
-      {hero ? (
-        <>
-          <div className="shipyard-preview-artwrap">
-            <img className="shipyard-preview-art" src={hero} alt="" />
-          </div>
-          <ShipModel loadout={loadout} />
-          <span className="shipyard-preview-caption">{shownHull?.name ?? "Apercu"}</span>
-        </>
-      ) : (
-        <>
-          <ShipModel loadout={loadout} />
-          <span className="shipyard-preview-caption">Apercu de votre flotte — glissez pour tourner</span>
-        </>
-      )}
+      <ShipModel loadout={loadout} />
+      <span className="shipyard-preview-caption">
+        {shownHull?.name ?? "Votre flotte"} · glissez pour tourner
+      </span>
     </div>
   );
 }

@@ -4350,29 +4350,48 @@ html[data-theme="clair"] .hud-scanline {
   color: #eafcff;
 }
 
-/* ---- modele de navire interactif : rotation 100% pilotee par le joueur ---- */
+/* ---- scene / visualiseur de navire (rotation pilotee par le joueur) ---- */
+.shipyard-preview.stage {
+  min-height: 300px;
+  padding: 16px 14px 30px;
+  background:
+    radial-gradient(90% 65% at 50% 32%, rgba(76, 234, 255, 0.16), transparent 70%),
+    linear-gradient(180deg, #0e2740 0%, #081a2c 55%, #050f1a 100%);
+  border-color: rgba(76, 234, 255, 0.35);
+}
 .ship-model {
   position: relative;
-  width: 120px;
-  height: 120px;
-  flex-shrink: 0;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
   display: grid;
   place-items: center;
   cursor: grab;
   touch-action: none;
-  border-radius: 12px;
-  background: radial-gradient(circle at 50% 45%, rgba(76, 234, 255, 0.1), rgba(4, 14, 24, 0.5));
-  border: 1px solid rgba(76, 234, 255, 0.22);
+  user-select: none;
 }
 .ship-model.dragging {
   cursor: grabbing;
 }
+/* halo sol + ombre portee sous le navire */
+.ship-model::before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 10%;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.55), transparent 72%);
+  filter: blur(2px);
+}
 .ship-model-rot {
-  width: 62%;
-  height: 92%;
+  width: 84%;
+  height: 88%;
   transform: rotate(var(--spin, 0deg));
-  transition: transform 0.06s linear;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
+  transition: transform 0.05s linear;
+  filter: brightness(1.28) contrast(1.08) drop-shadow(0 14px 26px rgba(0, 0, 0, 0.6));
 }
 .ship-model.dragging .ship-model-rot {
   transition: none;
@@ -4382,19 +4401,10 @@ html[data-theme="clair"] .hud-scanline {
   height: 100%;
   object-fit: contain;
 }
-/* petit indice visuel : anneau qui tourne pour montrer qu'on peut faire pivoter */
-.ship-model::after {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  border-radius: 50%;
-  border: 1px dashed rgba(76, 234, 255, 0.28);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.ship-model:hover::after {
-  opacity: 1;
+/* vignette illustration dans un coin de la scene */
+.shipyard-badge.art-thumb {
+  width: 62px;
+  height: 42px;
 }
 
 /* ---- Auras animees (autour des navires) ---- */
@@ -4404,12 +4414,15 @@ html[data-theme="clair"] .hud-scanline {
   --aura: #7fd3ff;
 }
 .ship-overlay.aura::before,
-.ship-model.aura::before {
+.ship-model.aura::after {
   content: "";
   position: absolute;
-  inset: -20%;
+  inset: -18%;
   border-radius: 42%;
   pointer-events: none;
+}
+.ship-model.aura::after {
+  inset: 6%;
 }
 .cos-swatch.aura-swatch {
   position: relative;
@@ -4432,7 +4445,7 @@ html[data-theme="clair"] .hud-scanline {
 
 /* flammes / braises */
 .aura-flammes.ship-overlay::before,
-.aura-flammes.ship-model::before,
+.aura-flammes.ship-model::after,
 .aura-flammes.aura-swatch::after {
   background: radial-gradient(circle, var(--aura) 0%, rgba(255, 106, 44, 0.35) 45%, transparent 72%);
   animation: aura-flicker 0.5s ease-in-out infinite alternate;
@@ -4443,7 +4456,7 @@ html[data-theme="clair"] .hud-scanline {
 }
 /* givre */
 .aura-givre.ship-overlay::before,
-.aura-givre.ship-model::before,
+.aura-givre.ship-model::after,
 .aura-givre.aura-swatch::after {
   background: radial-gradient(circle, var(--aura) 0%, rgba(127, 228, 255, 0.28) 50%, transparent 74%);
   animation: aura-breathe 2.6s ease-in-out infinite;
@@ -4454,7 +4467,7 @@ html[data-theme="clair"] .hud-scanline {
 }
 /* foudre */
 .aura-foudre.ship-overlay::before,
-.aura-foudre.ship-model::before,
+.aura-foudre.ship-model::after,
 .aura-foudre.aura-swatch::after {
   background: radial-gradient(circle, var(--aura) 0%, rgba(255, 210, 63, 0.3) 40%, transparent 68%);
   animation: aura-zap 1.7s steps(1) infinite;
@@ -4465,7 +4478,7 @@ html[data-theme="clair"] .hud-scanline {
 }
 /* spectre */
 .aura-spectre.ship-overlay::before,
-.aura-spectre.ship-model::before,
+.aura-spectre.ship-model::after,
 .aura-spectre.aura-swatch::after {
   background: radial-gradient(circle, var(--aura) 0%, rgba(176, 107, 255, 0.3) 48%, transparent 76%);
   animation: aura-drift 4s ease-in-out infinite;
@@ -4476,16 +4489,15 @@ html[data-theme="clair"] .hud-scanline {
 }
 /* dragon */
 .aura-dragon.ship-overlay::before,
-.aura-dragon.ship-model::before,
+.aura-dragon.ship-model::after,
 .aura-dragon.aura-swatch::after {
   background: radial-gradient(circle, #ffd23f 0%, var(--aura) 30%, rgba(255, 59, 59, 0.4) 55%, transparent 78%);
   animation: aura-flicker 0.32s ease-in-out infinite alternate;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ship-model-rot { animation: none !important; }
   .ship-overlay.aura::before,
-  .ship-model.aura::before,
+  .ship-model.aura::after,
   .cos-swatch.aura-swatch.aura::after {
     animation: none !important;
     opacity: 0.5 !important;
