@@ -27,9 +27,24 @@ function PreviewShip({ loadout, artFocus }: { loadout: Loadout; artFocus?: Cosme
   const shownHull = artFocus?.category === "hull" && artFocus.image ? artFocus : hullDef;
   const hero = cosmeticImage(shownHull);
 
+  // pointer parallax: tilt the flagship illustration like a 3D turntable
+  function tilt(e: React.MouseEvent<HTMLDivElement>) {
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    e.currentTarget.style.setProperty("--tx", (x * 26).toFixed(1));
+    e.currentTarget.style.setProperty("--ty", (-y * 16).toFixed(1));
+  }
+  function resetTilt(e: React.MouseEvent<HTMLDivElement>) {
+    e.currentTarget.style.setProperty("--tx", "0");
+    e.currentTarget.style.setProperty("--ty", "0");
+  }
+
   return (
     <div
       className={`shipyard-preview${hero ? " has-hero" : ""}`}
+      onMouseMove={hero ? tilt : undefined}
+      onMouseLeave={hero ? resetTilt : undefined}
       style={
         {
           "--grid-water": grid?.water,
@@ -55,7 +70,9 @@ function PreviewShip({ loadout, artFocus }: { loadout: Loadout; artFocus?: Cosme
 
       {hero ? (
         <>
-          <img className="shipyard-preview-art" src={hero} alt="" />
+          <div className="shipyard-preview-artwrap">
+            <img className="shipyard-preview-art" src={hero} alt="" />
+          </div>
           <div className="shipyard-preview-mini" title="Vos navires sur la grille">
             <ShipArt variant="destroyer" length={4} orientation="horizontal" uid="preview" livery={livery} flag={flag} />
           </div>
